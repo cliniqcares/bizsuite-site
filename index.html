@@ -6,6 +6,7 @@
     <title>BizSuite | The Future of Enterprise Intelligence</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -188,19 +189,19 @@
             padding: 3.5rem;
             border-radius: 40px;
             border: 1px solid var(--border);
-            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: border-color 0.4s ease;
             position: relative;
             backdrop-filter: blur(10px);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             min-height: 450px;
+            transform-style: preserve-3d;
+            transform: perspective(1000px);
         }
 
         .card:hover {
-            transform: translateY(-20px) scale(1.02);
-            background: rgba(255,255,255,0.05);
-            border-color: rgba(255,255,255,0.2);
+            border-color: rgba(255, 255, 255, 0.3);
             box-shadow: 0 50px 100px -20px rgba(0,0,0,0.9);
         }
 
@@ -215,13 +216,8 @@
             justify-content: center;
             color: var(--primary-light);
             margin-bottom: 2.5rem;
-            transition: 0.3s;
-        }
-
-        .card:hover .icon-wrap {
-            background: var(--gradient);
-            color: #fff;
-            transform: rotate(-5deg) scale(1.1);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateZ(30px);
         }
 
         .card h3 {
@@ -230,6 +226,7 @@
             font-weight: 800;
             margin-bottom: 1.25rem;
             letter-spacing: -0.5px;
+            transform: translateZ(50px);
         }
 
         .card p {
@@ -237,6 +234,7 @@
             font-size: 1rem;
             margin-bottom: 3rem;
             line-height: 1.8;
+            transform: translateZ(40px);
         }
 
         .explore-btn {
@@ -255,6 +253,7 @@
             border-radius: 100px;
             transition: 0.4s;
             width: fit-content;
+            transform: translateZ(60px);
         }
 
         .explore-btn:hover {
@@ -428,7 +427,7 @@
             
             <div class="grid">
                 <!-- CliniqCare -->
-                <div class="card reveal">
+                <div class="card reveal" data-tilt data-tilt-max="10" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2">
                     <div>
                         <div class="icon-wrap"><i data-lucide="activity"></i></div>
                         <h3>CliniqCare</h3>
@@ -440,7 +439,7 @@
                 </div>
 
                 <!-- BizBooks -->
-                <div class="card reveal" style="transition-delay: 0.1s">
+                <div class="card reveal" data-tilt data-tilt-max="10" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="transition-delay: 0.1s">
                     <div>
                         <div class="icon-wrap"><i data-lucide="bar-chart-4"></i></div>
                         <h3>BizBooks</h3>
@@ -452,7 +451,7 @@
                 </div>
 
                 <!-- EventPix -->
-                <div class="card reveal" style="transition-delay: 0.2s">
+                <div class="card reveal" data-tilt data-tilt-max="10" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="transition-delay: 0.2s">
                     <div>
                         <div class="icon-wrap"><i data-lucide="image"></i></div>
                         <h3>EventPix</h3>
