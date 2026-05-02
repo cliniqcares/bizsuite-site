@@ -6,22 +6,23 @@
     <title>BizSuite | The Future of Enterprise Intelligence</title>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://unpkg.com/scrollreveal"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000205;
-            --surface: #0a0c10;
+            --bg: #000103;
+            --surface: rgba(10, 12, 16, 0.4);
             --primary: #2563eb;
             --primary-light: #60a5fa;
             --secondary: #7c3aed;
             --accent: #06b6d4;
             --text: #ffffff;
             --text-muted: #8892b0;
-            --border: rgba(255, 255, 255, 0.05);
-            --glass: rgba(255, 255, 255, 0.02);
+            --border: rgba(255, 255, 255, 0.08);
+            --glass: rgba(255, 255, 255, 0.03);
             --gradient: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
         }
 
@@ -42,18 +43,15 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* ── Dynamic Background ── */
-        .bg-glow {
+        /* ── Three.js Canvas ── */
+        #canvas-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
             z-index: -1;
-            pointer-events: none;
+            background: radial-gradient(circle at center, #0a0c10 0%, #000103 100%);
         }
 
         /* ── Navigation ── */
@@ -62,8 +60,8 @@
             top: 0;
             width: 100%;
             padding: 1.5rem 0;
-            background: rgba(0, 2, 5, 0.7);
-            backdrop-filter: blur(20px);
+            background: rgba(0, 1, 3, 0.6);
+            backdrop-filter: blur(24px) saturate(180%);
             z-index: 1000;
             border-bottom: 1px solid var(--border);
         }
@@ -132,7 +130,7 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.6rem 1.2rem;
-            background: rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--border);
             border-radius: 100px;
             font-size: 0.7rem;
@@ -141,7 +139,7 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 2.5rem;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
         }
 
         h1 {
@@ -150,10 +148,9 @@
             font-weight: 900;
             line-height: 0.9;
             letter-spacing: -4px;
-            margin-bottom: 2rem;
-            background: linear-gradient(to bottom, #fff, rgba(255,255,255,0.4));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            margin-bottom: 2.5rem;
+            color: #fff;
+            text-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
 
         .hero-desc {
@@ -166,18 +163,6 @@
         }
 
         /* ── Product Grid ── */
-        .section-header {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
-
-        .section-header h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 3rem;
-            font-weight: 800;
-            letter-spacing: -2px;
-        }
-
         .grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -185,39 +170,61 @@
         }
 
         .card {
-            background: var(--glass);
+            background: var(--surface);
             padding: 3.5rem;
             border-radius: 40px;
             border: 1px solid var(--border);
-            transition: border-color 0.4s ease;
+            transition: border-color 0.4s ease, background 0.4s ease;
             position: relative;
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(24px) saturate(180%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-height: 450px;
+            min-height: 500px;
             transform-style: preserve-3d;
-            transform: perspective(1000px);
+            transform: perspective(1200px);
+        }
+
+        .card::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 40px;
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2), transparent, rgba(255,255,255,0.05));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
         }
 
         .card:hover {
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.9);
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 40px 80px -20px rgba(0,0,0,0.8);
         }
 
         .icon-wrap {
-            width: 70px;
-            height: 70px;
-            background: linear-gradient(135deg, rgba(255,255,255,0.05), transparent);
+            width: 76px;
+            height: 76px;
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border);
-            border-radius: 22px;
+            border-radius: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary-light);
             margin-bottom: 2.5rem;
-            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            transform: translateZ(30px);
+            transition: 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform: translateZ(40px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .card:hover .icon-wrap {
+            background: var(--gradient);
+            color: #fff;
+            transform: translateZ(60px) rotate(-10deg);
         }
 
         .card h3 {
@@ -232,102 +239,48 @@
         .card p {
             color: var(--text-muted);
             font-size: 1rem;
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
             line-height: 1.8;
-            transform: translateZ(40px);
+            transform: translateZ(30px);
         }
 
         .explore-btn {
             display: inline-flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: 0.85rem;
             text-decoration: none;
             color: #fff;
             font-weight: 800;
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            padding: 1rem 2rem;
-            background: rgba(255,255,255,0.03);
+            padding: 1.1rem 2.2rem;
+            background: rgba(255,255,255,0.05);
             border: 1px solid var(--border);
             border-radius: 100px;
             transition: 0.4s;
             width: fit-content;
-            transform: translateZ(60px);
+            transform: translateZ(70px);
         }
 
         .explore-btn:hover {
             background: #fff;
             color: #000;
-            gap: 1.2rem;
-        }
-
-        /* ── About ── */
-        .about {
-            padding: 10rem 0;
-            background: radial-gradient(circle at 50% 50%, rgba(37, 99, 235, 0.05), transparent 70%);
-        }
-
-        .about-inner {
-            display: grid;
-            grid-template-columns: 1.2fr 1fr;
-            gap: 6rem;
-            align-items: center;
-        }
-
-        .about-text h2 {
-            font-family: 'Outfit', sans-serif;
-            font-size: 3.5rem;
-            font-weight: 900;
-            margin-bottom: 2rem;
-            letter-spacing: -2px;
-        }
-
-        .stat-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-        }
-
-        .stat-item {
-            padding: 2rem;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-        }
-
-        .stat-val {
-            font-size: 2.5rem;
-            font-weight: 900;
-            color: #fff;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        .stat-label {
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--primary-light);
-            letter-spacing: 1px;
+            padding-right: 3rem;
         }
 
         /* ── Footer ── */
         footer {
             padding: 10rem 0 5rem;
             border-top: 1px solid var(--border);
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
         }
 
         .footer-grid {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr;
             gap: 5rem;
-        }
-
-        .footer-desc {
-            color: var(--text-muted);
-            margin: 1.5rem 0 2rem;
-            max-width: 300px;
-            font-size: 0.95rem;
         }
 
         .footer-col h4 {
@@ -345,25 +298,10 @@
             text-decoration: none;
             margin-bottom: 1.25rem;
             font-size: 0.95rem;
-            font-weight: 500;
             transition: 0.3s;
         }
 
-        .footer-col a:hover { color: #fff; padding-left: 5px; }
-
-        .socials { display: flex; gap: 1rem; }
-        .social-link {
-            width: 40px;
-            height: 40px;
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            transition: 0.3s;
-        }
-        .social-link:hover { background: var(--primary); transform: translateY(-5px); }
+        .footer-col a:hover { color: #fff; transform: translateX(5px); }
 
         .legal-row {
             margin-top: 8rem;
@@ -371,34 +309,31 @@
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
-            align-items: center;
             color: var(--text-muted);
             font-size: 0.85rem;
         }
 
         @media (max-width: 1024px) {
             .grid { grid-template-columns: 1fr; }
-            .about-inner { grid-template-columns: 1fr; text-align: center; }
-            .footer-grid { grid-template-columns: 1fr 1fr; }
-            h1 { font-size: 4rem; }
+            h1 { font-size: 3.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="bg-glow"></div>
+    <div id="canvas-container"></div>
 
     <nav>
         <div class="container nav-inner">
             <div class="logo">
-                <i data-lucide="shield-check" size="28" style="color: var(--primary-light)"></i>
+                <i data-lucide="layers" size="28" style="color: var(--primary-light)"></i>
                 BizSuite.
             </div>
             <div class="nav-links">
                 <a href="#ecosystem">Ecosystem</a>
-                <a href="#vision">Vision</a>
+                <a href="#mission">Vision</a>
                 <a href="/privacy.html">Privacy</a>
-                <a href="mailto:hello.bizsuite@gmail.com" class="btn-nav">Get in touch</a>
+                <a href="mailto:hello.bizsuite@gmail.com" class="btn-nav">Partner with us</a>
             </div>
         </div>
     </nav>
@@ -406,86 +341,55 @@
     <header class="hero">
         <div class="container">
             <div class="hero-badge">
-                <i data-lucide="zap" size="14"></i>
-                Accelerating Digital Transformation
+                <i data-lucide="shield-check" size="14"></i>
+                Enterprise-Grade Intelligence
             </div>
-            <h1>Intelligence for the<br>New Economy.</h1>
-            <p class="hero-desc">BizSuite Technologies is the power behind a cluster of elite SaaS platforms. We build the architecture that enables businesses to operate with extreme speed and precision.</p>
-            <div class="socials" style="justify-content: center; gap: 2rem;">
-                <a href="#ecosystem" class="explore-btn" style="background: #fff; color: #000;">View Ecosystem</a>
-                <a href="#vision" class="explore-btn">Learn More</a>
+            <h1>The Architecture<br>of Progress.</h1>
+            <p class="hero-desc">BizSuite Technologies designs and deploys high-performance SaaS ecosystems. We empower modern businesses with the data intelligence they need to lead.</p>
+            <div style="display: flex; justify-content: center; gap: 2rem;">
+                <a href="#ecosystem" class="explore-btn" style="background: #fff; color: #000;">Enter Portal</a>
+                <a href="mailto:hello.bizsuite@gmail.com" class="explore-btn">Get Access</a>
             </div>
         </div>
     </header>
 
-    <section id="ecosystem" class="products">
+    <section id="ecosystem" style="padding: 10rem 0;">
         <div class="container">
-            <div class="section-header">
-                <div class="hero-badge">Products</div>
-                <h2>One Vision. Three Frontiers.</h2>
-            </div>
-            
             <div class="grid">
                 <!-- CliniqCare -->
-                <div class="card reveal" data-tilt data-tilt-max="10" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2">
+                <div class="card reveal" data-tilt data-tilt-max="8" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3">
                     <div>
                         <div class="icon-wrap"><i data-lucide="activity"></i></div>
                         <h3>CliniqCare</h3>
-                        <p>Revolutionizing patient care through advanced medical intelligence. A comprehensive OPD ecosystem for the modern doctor.</p>
+                        <p>High-performance clinical management. Smart prescriptions, patient analytics, and automated scheduling for the modern OPD.</p>
                     </div>
                     <a href="https://www.cliniqcare.co.in" class="explore-btn">
-                        Visit CliniqCare <i data-lucide="arrow-up-right" size="16"></i>
+                        Open Product <i data-lucide="external-link" size="16"></i>
                     </a>
                 </div>
 
                 <!-- BizBooks -->
-                <div class="card reveal" data-tilt data-tilt-max="10" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="transition-delay: 0.1s">
+                <div class="card reveal" data-tilt data-tilt-max="8" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="transition-delay: 0.1s">
                     <div>
-                        <div class="icon-wrap"><i data-lucide="bar-chart-4"></i></div>
+                        <div class="icon-wrap"><i data-lucide="landmark"></i></div>
                         <h3>BizBooks</h3>
-                        <p>Financial clarity for growing enterprises. Real-time ledger tracking and deep accounting insights in a single portal.</p>
+                        <p>Precision financial tracking for growing enterprises. Real-time ledger management and automated business reporting.</p>
                     </div>
                     <a href="https://bizbooks.co.in" class="explore-btn">
-                        Visit BizBooks <i data-lucide="arrow-up-right" size="16"></i>
+                        Open Product <i data-lucide="external-link" size="16"></i>
                     </a>
                 </div>
 
                 <!-- EventPix -->
-                <div class="card reveal" data-tilt data-tilt-max="10" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.2" style="transition-delay: 0.2s">
+                <div class="card reveal" data-tilt data-tilt-max="8" data-tilt-speed="1000" data-tilt-glare data-tilt-max-glare="0.3" style="transition-delay: 0.2s">
                     <div>
-                        <div class="icon-wrap"><i data-lucide="image"></i></div>
+                        <div class="icon-wrap"><i data-lucide="camera"></i></div>
                         <h3>EventPix</h3>
-                        <p>Redefining event memories. AI-powered face recognition and instant cloud-delivery for professional photography.</p>
+                        <p>AI-driven event photography. Instant face-recognition based delivery and premium cloud galleries for professional hosts.</p>
                     </div>
                     <a href="https://event-pix-flax.vercel.app/" class="explore-btn">
-                        Visit EventPix <i data-lucide="arrow-up-right" size="16"></i>
+                        Open Product <i data-lucide="external-link" size="16"></i>
                     </a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <section id="vision" class="about">
-        <div class="container">
-            <div class="about-inner">
-                <div class="about-text reveal">
-                    <div class="hero-badge">The Mission</div>
-                    <h2>Software Built for<br>The 1% Businesses.</h2>
-                    <p class="hero-desc">We don't build generic tools. We build high-performance infrastructure that gives our users a distinct competitive edge in their local markets.</p>
-                    <div class="stat-grid">
-                        <div class="stat-item">
-                            <div class="stat-val">250ms</div>
-                            <div class="stat-label">Average Latency</div>
-                        </div>
-                        <div class="stat-item">
-                            <div class="stat-val">100%</div>
-                            <div class="stat-label">Cloud Security</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="about-visual reveal" style="padding: 2rem;">
-                    <div style="aspect-ratio: 1; border-radius: 50%; background: var(--gradient); opacity: 0.1; filter: blur(100px); position: absolute; width: 400px; z-index: -1;"></div>
-                    <i data-lucide="globe" size="300" stroke-width="0.5" style="color: rgba(255,255,255,0.05); transform: rotate(15deg);"></i>
                 </div>
             </div>
         </div>
@@ -496,12 +400,7 @@
             <div class="footer-grid">
                 <div class="footer-col">
                     <div class="logo footer-logo">BizSuite.</div>
-                    <p class="footer-desc">Building the digital architecture for India's growing enterprise sector.</p>
-                    <div class="socials">
-                        <a href="#" class="social-link"><i data-lucide="twitter" size="18"></i></a>
-                        <a href="#" class="social-link"><i data-lucide="linkedin" size="18"></i></a>
-                        <a href="#" class="social-link"><i data-lucide="instagram" size="18"></i></a>
-                    </div>
+                    <p style="color: var(--text-muted); margin-top: 1rem; max-width: 280px;">Engineering the future of localized business intelligence in India.</p>
                 </div>
                 <div class="footer-col">
                     <h4>Ecosystem</h4>
@@ -510,21 +409,18 @@
                     <a href="https://event-pix-flax.vercel.app/">EventPix</a>
                 </div>
                 <div class="footer-col">
-                    <h4>Resources</h4>
+                    <h4>Legal</h4>
                     <a href="/privacy.html">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Contact Support</a>
+                    <a href="#">Terms of Use</a>
                 </div>
                 <div class="footer-col">
                     <h4>Contact</h4>
-                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">
-                        Satish Jain Niwas, Shop-2,<br>3rd Lane, Itarsi (MP) 461111
-                    </p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem;">Satish Jain Niwas, Itarsi (MP) 461111</p>
                     <a href="mailto:hello.bizsuite@gmail.com">hello.bizsuite@gmail.com</a>
                 </div>
             </div>
             <div class="legal-row">
-                <div>&copy; 2026 BizSuite Technologies India. All rights reserved.</div>
+                <div>&copy; 2026 BizSuite Technologies.</div>
                 <div>Designed for the future.</div>
             </div>
         </div>
@@ -533,11 +429,68 @@
     <script>
         lucide.createIcons();
         ScrollReveal().reveal('.reveal', { 
-            delay: 200, 
-            distance: '50px',
-            duration: 1000,
+            delay: 300, 
+            distance: '60px',
+            duration: 1200,
             easing: 'cubic-bezier(0.5, 0, 0, 1)',
-            interval: 100
+            interval: 150
+        });
+
+        // ── Three.js Particle Constellation ──
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const counts = 1500;
+        const positions = new Float32Array(counts * 3);
+
+        for(let i = 0; i < counts * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 15;
+        }
+
+        particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const particlesMaterial = new THREE.PointsMaterial({
+            size: 0.015,
+            color: '#3b82f6',
+            transparent: true,
+            opacity: 0.6,
+            blending: THREE.AdditiveBlending
+        });
+
+        const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+
+        camera.position.z = 5;
+
+        let mouseX = 0;
+        let mouseY = 0;
+
+        document.addEventListener('mousemove', (event) => {
+            mouseX = (event.clientX / window.innerWidth - 0.5) * 2;
+            mouseY = (event.clientY / window.innerHeight - 0.5) * 2;
+        });
+
+        const animate = () => {
+            requestAnimationFrame(animate);
+            particles.rotation.y += 0.001;
+            particles.rotation.x += 0.0005;
+
+            // Follow mouse subtly
+            particles.position.x += (mouseX * 0.5 - particles.position.x) * 0.05;
+            particles.position.y += (-mouseY * 0.5 - particles.position.y) * 0.05;
+
+            renderer.render(scene, camera);
+        };
+
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
         });
     </script>
 </body>
