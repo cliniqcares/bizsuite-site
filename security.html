@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security & Compliance | BizSuite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030712;
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --primary: #10b981;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            padding: 5rem 10%;
+            line-height: 1.8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 { font-size: 3rem; font-weight: 800; margin-bottom: 2rem; letter-spacing: -2px; }
+        h2 { font-size: 1.5rem; font-weight: 800; margin-top: 3.5rem; margin-bottom: 1rem; color: var(--primary); }
+        p { margin-bottom: 1.5rem; color: var(--muted); }
+        .back { color: #fff; text-decoration: none; font-weight: 700; display: inline-block; margin-bottom: 2rem; }
+        
+        .section-box {
+            padding: 2rem;
+            background: rgba(16, 185, 129, 0.05);
+            border: 1px solid rgba(16, 185, 129, 0.1);
+            border-radius: 24px;
+            margin-bottom: 2rem;
+        }
+        li { color: var(--muted); margin-bottom: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back">← Back to BizSuite</a>
+        <h1>Security & Compliance</h1>
+        <p>Last updated: May 12, 2026</p>
+
+        <div class="section-box">
+            <h2>1. OTP & Identity Security</h2>
+            <p>Our WhatsApp Authentication Gateway utilizes enterprise-grade protocols to ensure user identity:</p>
+            <ul>
+                <li>Secure 6-digit numeric OTP generation.</li>
+                <li>10-minute expiration (TTL) for all verification codes.</li>
+                <li>Strict rate limiting (1 request per 60s) to prevent spam.</li>
+                <li>Account lockout after 3 failed verification attempts.</li>
+            </ul>
+        </div>
+
+        <div class="section-box">
+            <h2>2. Data Protection (PII)</h2>
+            <p>We treat Personally Identifiable Information (PII) with the highest priority:</p>
+            <ul>
+                <li><strong>Encryption:</strong> All data is encrypted in transit (TLS 1.2+) and at rest (AES-256).</li>
+                <li><strong>Minimization:</strong> We only store data necessary for message delivery and billing.</li>
+                <li><strong>Isolation:</strong> Each business application (BizBooks, EventPix) operates in a strictly isolated environment.</li>
+            </ul>
+        </div>
+
+        <div class="section-box">
+            <h2>3. WhatsApp Infrastructure</h2>
+            <p>Our messaging infrastructure is built directly on the official Meta Cloud API, ensuring:</p>
+            <ul>
+                <li>Compliance with WhatsApp Business Policies.</li>
+                <li>Automatic handling of user "STOP" or "Unsubscribe" requests.</li>
+                <li>End-to-end encryption for all message payloads.</li>
+            </ul>
+        </div>
+
+        <div class="section-box">
+            <h2>4. Audit & Monitoring</h2>
+            <p>We maintain comprehensive audit logs for all technical operations, including delivery timestamps, success rates, and system performance metrics, ensuring full transparency for our business clients.</p>
+        </div>
+
+        <div style="margin-top: 5rem; color: var(--muted); font-size: 0.85rem;">
+            &copy; 2026 BizSuite Technologies India. For security inquiries, contact <a href="mailto:hello@bizsuite.co.in" style="color: var(--primary);">hello@bizsuite.co.in</a>.
+        </div>
+    </div>
+</body>
+</html>
